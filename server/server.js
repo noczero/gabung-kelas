@@ -24,5 +24,5 @@ readdirSync('./routes').map((r) =>
 
 
 // run port
-const port = process.env.PORT || 8001; // || means if not available use 8001
-app.listen(port, ()=>console.log(`server is running on port ${port}`));
+const port = process.env.PORT || 8080; // || means if not available use 8001
+app.listen(port,'0.0.0.0', ()=>console.log(`server is running on port ${port}`));

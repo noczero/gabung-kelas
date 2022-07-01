@@ -1,0 +1,41 @@
+services:
+  mongodb-ems:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - data:/data/db
+    restart: always
+
+  client-ui-ems:
+    container_name: client-ui-ems
+    image: client-ui-ems
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV : development
+    ports:
+      - 3001:3000
+    volumes:
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: always
+
+  server-api-ems:
+    container_name: server-api-ems
+    image: server-api-ems
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV : production
+    ports:
+      - 8080:8080
+    volumes:
+      - ./server:/usr/src/app
+    restart: always
+
+volumes:
+  data:
+
