@@ -3,7 +3,10 @@ import cors from 'cors';
 import {readdirSync} from "fs";
 
 const morgan = require('morgan');
-require('dotenv').config();
+
+// utils
+import {envar} from "./config/envar"; // environment variable
+import {setupDB} from "./utils/db"; // mongodb database setup connection
 
 // create express app
 const app = express();
@@ -17,12 +20,13 @@ app.use((req,res,next) => {
     next();
 });
 
+// invoke database setup
+setupDB().then(r => console.log("try to connect MongoDB..."));
+
 // import route folders sync
 readdirSync('./routes').map((r) =>
-    app.use('/api',require(`./routes/${r}`))
+    app.use(`/${envar.app.apiPrefix}`,require(`./routes/${r}`))
 );
 
-
 // run port
-const port = process.env.PORT || 8080; // || means if not available use 8001
-app.listen(port,'0.0.0.0', ()=>console.log(`server is running on port ${port}`));
+app.listen(envar.port,'0.0.0.0', ()=>console.log(`server is running on port ${envar.port}`));
