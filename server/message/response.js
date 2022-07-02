@@ -1,7 +1,7 @@
-export const api_response = (status, message, data) =>{
+export const api_response = (status, message, list) =>{
     return {
         status : status,
         message : message,
-        data: data
+        list: list
     }
 }
