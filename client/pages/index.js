@@ -1,7 +1,9 @@
+import {envar} from "../config/envar";
+
 const Index = () => {
     return (
       <>
-        <h1 className="jumbotron text-center bg-primary">Online Course</h1>
+        <h1 className="jumbotron text-center bg-primary">{envar.app.name}</h1>
       </>
     );
 };
