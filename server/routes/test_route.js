@@ -2,7 +2,6 @@ import express from "express";
 
 const router = express.Router();
 import asyncHandler from "express-async-handler";
-import {register_async} from "../controllers/register";
 import {get_async_test, get_async_test_wrapper} from "../controllers/test_controller";
 
 // using normal try and block
