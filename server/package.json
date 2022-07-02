@@ -8,8 +8,8 @@
     "start": "nodemon -r esm server.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Satrya Budi Pratama",
+  "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
