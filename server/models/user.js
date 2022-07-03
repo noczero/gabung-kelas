@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const {ROLE_ADMIN, ROLE_STUDENT, ROLE_INSTRUCTOR} = require('../constants');
+const {ROLE_ADMIN, ROLE_SUBSCRIBER, ROLE_INSTRUCTOR} = require('../constants');
 
 const {Schema} = mongoose;
 
@@ -7,6 +7,7 @@ const {Schema} = mongoose;
 const userSchema = new Schema({
         email: {
             type: String,
+            unique: true,
             required: () => {
                 return this.provider !== 'email' ? false : true;
             }
@@ -18,10 +19,13 @@ const userSchema = new Schema({
             type: String
         },
         password: {
-            type: String
+            type: String,
+            min: 8,
+            max: 64
         },
         agreement: {
-            type: Boolean
+            type: Boolean,
+            default : true
         },
         provider: {
             type: String,
@@ -34,14 +38,18 @@ const userSchema = new Schema({
         facebookId: {
             type: String
         },
-        avatar: {
-            type: String
+        picture: {
+            type: String,
+            default: "/avatar.png"
         },
         role: {
-            type: String,
-            default: ROLE_STUDENT,
-            enum: [ROLE_ADMIN, ROLE_STUDENT, ROLE_INSTRUCTOR]
+            type: [String],
+            default: [ROLE_SUBSCRIBER],
+            enum: [ROLE_ADMIN, ROLE_SUBSCRIBER, ROLE_INSTRUCTOR]
         },
+        stripeAccountId: "",
+        stripeSeller: {},
+        stripeSession: {},
         resetPasswordToken: {type: String},
         resetPasswordExpires: {type: Date},
     },
