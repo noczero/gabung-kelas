@@ -1,7 +1,9 @@
 import {api_response} from "../message/response";
 import User from "../models/user";
 import bcrypt from "bcrypt";
-import {hashPassword} from "../utils/auth";
+import {comparePassword, hashPassword} from "../utils/auth";
+import {envar} from "../config/envar";
+import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
     try {
@@ -12,11 +14,11 @@ export const registerUser = async (req, res) => {
         if (!email) {
             return res
                 .status(400)
-                .send(api_response("01","Email diperlukan"));
+                .send(api_response("01", "Email diperlukan"));
         }
 
         if (!fullName) {
-            return res.status(400).send(api_response("01","Nama lengkap diperlukan"));
+            return res.status(400).send(api_response("01", "Nama lengkap diperlukan"));
         }
 
         if (!password || password.length < 8) {
@@ -61,3 +63,50 @@ export const registerUser = async (req, res) => {
         res.status(500).send(api_response('01', 'Something wrong'))
     }
 }
+
+
+export const loginUser = async (req, res) => {
+    try {
+        // console.log(req.body);
+        const {email, password} = req.body;
+
+        if (!email) {
+            return res.status(400).send(api_response("01", "Email diperlukan"));
+        }
+
+        if (!password) {
+            return res.status(400).send("01", "Password diperlukan");
+        }
+
+        // check if our db has user with that email
+        const user = await User.findOne({email}).exec();
+        if (!user) return res.status(400).send(api_response("01", "Tidak ada user dengan email ini."));
+
+        // check password
+        const isMatch = await comparePassword(password, user.password);
+        if (!isMatch) {
+            return res.status(400).send(api_response("01", "Password anda salah, silahkan coba lag.i"));
+        }
+
+        // create signed jwt
+        const token = jwt.sign({_id: user._id}, envar.jwt.secret, {
+            expiresIn: envar.jwt.tokenLife,
+        });
+        if (!token) {
+            throw new Error();
+        }
+
+        // return user and token to client, exclude hashed password
+        user.password = undefined;
+        // send token in cookie
+        res.cookie("token", token, {
+            httpOnly: true,
+            // secure: true, // only works on https
+        });
+        // send user as json response
+        res.send(api_response("00", "Berhasil masuk", [user]));
+    } catch (err) {
+        console.log(err);
+        return res.status(400).send("01", "Something went wrong");
+    }
+};

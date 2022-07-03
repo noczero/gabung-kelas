@@ -2,7 +2,7 @@ import express from "express";
 
 const router = express.Router();
 import asyncHandler from "express-async-handler";
-import {registerUser} from "../controllers/register";
+import {loginUser, registerUser} from "../controllers/auth";
 
 
 router.get("/register",(req,res) => {
@@ -11,6 +11,7 @@ router.get("/register",(req,res) => {
 
 
 router.post('/register', registerUser)
+router.post('/login', loginUser)
 
 
 
