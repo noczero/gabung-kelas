@@ -1,10 +1,6 @@
 import {useState} from "react";
 import axios from "axios";
-import {envar} from "../config/envar";
-import nextConfig from "../next.config.mjs";
-
-const {apiURL} = nextConfig.app
-
+import {toast} from "react-toastify";
 import {
     AutoComplete,
     Button,
@@ -17,6 +13,12 @@ import {
     Row,
     Select
 } from "antd";
+import {SyncOutlined} from "@ant-design/icons";
+
+import nextConfig from "../next.config.mjs";
+import Link from "next/link";
+
+const {apiURL} = nextConfig.app
 
 const formItemLayout = {
     labelCol: {
@@ -57,6 +59,9 @@ const Register = () => {
     const [password, setPassword] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [loading, setLoading] = useState(false);
+    const [agreement, setAgreement] = useState(false);
+
 
     const [form] = Form.useForm();
     const {Option} = Select;
@@ -74,19 +79,28 @@ const Register = () => {
     );
 
     const onFinish = async (values) => {
-        console.log('Received values of form: ', values);
+        // console.log('Received values of form: ', values);
         // console.table(values)
         // console.log(nextConfig)
         try {
+            setLoading(true)
             const {data} = await axios.post(`${apiURL}/register`, values)
-            console.log(data)
-            if (data.message === '00') {
-                console.log('success')
-            } else {
-                console.log('failed response')
-            }
+            // console.log(data)
+            // as response with status != will go to catch, we dont need to make a status condition.
+            // it will success anyway
+            // if (data.status === '00') {
+            //     console.log('success')
+            //     toast.success(data.message)
+            // } else if (data.status === '01') {
+            //     console.log('failed response')
+            //     toast.error(data.message)
+            // }
+            toast(data.message)
+            setLoading(false)
         } catch (e) {
-            console.log(e)
+            toast.error(e.response.data.message)
+            // console.log(e)
+            setLoading(false)
         }
 
     };
@@ -100,7 +114,7 @@ const Register = () => {
 
     return (
         <>
-            <h1 className="jumbotron bg-primary square"> Register </h1>
+            <h3 className="container-fluid text-center pt-4 pb-2">Daftar</h3>
             <div className="container col-md-4 offset-md-4 pb-5">
                 <Form
                     {...formItemLayout}
@@ -113,7 +127,7 @@ const Register = () => {
                         email: 'test@test.com',
                         password: 'useruseruser',
                         confirmPassword: 'useruseruser',
-                        phoneNumber: '82277009251',
+                        phoneNumber: '82211334400',
                     }}
                     scrollToFirstError
                 >
@@ -157,7 +171,7 @@ const Register = () => {
                     </Form.Item>
                     <Form.Item
                         name="password"
-                        label="Kata Sandi"
+                        label="Password"
                         rules={[
                             {
                                 required: true,
@@ -176,7 +190,7 @@ const Register = () => {
 
                     <Form.Item
                         name="confirmPassword"
-                        label="Konfirmasi Kata Sandi"
+                        label="Check Password"
                         dependencies={['password']}
                         hasFeedback
                         rules={[
@@ -229,19 +243,30 @@ const Register = () => {
                         ]}
                         {...tailFormItemLayout}
                     >
-                        <Checkbox>
+                        <Checkbox
+                            checked={agreement}
+                            onChange={e => setAgreement(e.target.checked)}
+                        >
                             Dengan menandai kotak disamping, Anda telah menyetujui <a href="#"> Ketentuan
                             Penggunaan </a>
                         </Checkbox>
                     </Form.Item>
 
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            disabled={loading || !agreement}
+                            loading={loading}
+                        >
                             Registrasi
                         </Button>
                     </Form.Item>
 
                 </Form>
+                <div className="text-center">
+                    <p>Sudah punya akun? Silahkan <Link href="/login"><a>Masuk</a></Link></p>
+                </div>
             </div>
 
             {/*<div className="container col-md-4 offset-md-4 pb-5">*/}
