@@ -104,7 +104,7 @@ export const loginUser = async (req, res) => {
             // secure: true, // only works on https
         });
         // send user as json response
-        res.send(api_response("00", "Berhasil masuk", [user]));
+        res.send(api_response("00", `Selamat datang ${user.fullName}, kamu berhasil masuk.`, [user]));
     } catch (err) {
         console.log(err);
         return res.status(400).send("01", "Something went wrong");
