@@ -1,3 +1,4 @@
+import {useState, useEffect} from "react";
 import {Menu} from "antd";
 import Link from "next/link";
 import {AppstoreAddOutlined, LoginOutlined, UserAddOutlined} from "@ant-design/icons";
@@ -11,7 +12,7 @@ const items = [
                 <a>Gabung Kelas</a>
             </Link>
         ),
-        key: 'app',
+        key: '/',
         icon: <AppstoreAddOutlined/>,
     }, // remember to pass the key prop
     {
@@ -20,7 +21,7 @@ const items = [
                 <a>Masuk</a>
             </Link>
         ),
-        key: 'login',
+        key: '/login',
         icon: <LoginOutlined/>
     }, // which is required
     {
@@ -29,14 +30,23 @@ const items = [
                 <a>Daftar</a>
             </Link>
         ),
-        key: 'register',
+        key: '/register',
         icon: <UserAddOutlined/>
     }, // which is required
 ];
 
 const TopNav = () => {
+    const [current, setCurrent] = useState("");
+
+    const handleClick = (e) => {
+        setCurrent(e.key)
+    }
+
+    useEffect(() => {
+        process.browser && setCurrent(window.location.pathname);
+    }, [process.browser && window.location.pathname]);
     return (
-        <Menu mode="horizontal" items={items}/>
+        <Menu mode="horizontal" items={items} onClick={handleClick} selectedKeys={[current]}/>
     )
 }
 export default TopNav;
