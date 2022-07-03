@@ -1,8 +1,102 @@
-const Login = ()=> {
+import {Button, Form, Input} from "antd";
+import Link from "next/link";
+import {useState} from "react";
+import axios from "axios";
+import {toast} from "react-toastify";
+
+import formItemLayout from "../constants/formItemLayout";
+import tailFormItemLayout from "../constants/tailFormItemLayout";
+import nextConfig from "../next.config.mjs";
+
+const Login = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [form] = Form.useForm();
+
+    const onFinish = async (values) => {
+        console.log(values)
+        try {
+            setLoading(true)
+            const {data} = await axios.post(`${nextConfig.app.apiPrefix}/login`, values)
+            toast(data.message)
+            setLoading(false)
+        } catch (e) {
+            toast.error(e.response.data.message)
+            setLoading(false)
+        }
+    }
     return (
         <>
             <h3 className="container-fluid text-center pt-4 pb-2">Masuk</h3>
-            <p>Login page</p>
+            <div className="container col-md-4 offset-md-4 pb-5">
+                <Form
+                    {...formItemLayout}
+                    form={form}
+                    name="login"
+                    onFinish={onFinish}
+                    initialValues={{
+                        email: 'test@test.com',
+                        password: 'useruseruser',
+                    }}
+                    scrollToFirstError
+                >
+
+                    <Form.Item
+                        name="email"
+                        label="E-mail"
+                        rules={[
+                            {
+                                type: 'email',
+                                message: 'E-mail yang dimasukkan tidak valid!',
+                            },
+                            {
+                                required: true,
+                                message: 'Masukkan email!',
+                            },
+                        ]}
+                    >
+                        <Input
+                            placeholder="Masukkan email valid"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        name="password"
+                        label="Password"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Masukkan kata sandi, minimal 8 karakter.',
+                                min: 8
+                            },
+                        ]}
+                        hasFeedback
+                    >
+                        <Input.Password
+                            placeholder="Masukkan password"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                        />
+                    </Form.Item>
+
+                    <Form.Item {...tailFormItemLayout}>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            disabled={loading}
+                            loading={loading}
+                        >
+                            Masuk
+                        </Button>
+                    </Form.Item>
+
+                </Form>
+                <div className="text-center">
+                    <p>Belum punya akun? Silahkan <Link href="/register"><a>mendaftar</a></Link></p>
+                </div>
+            </div>
         </>
     )
 }
