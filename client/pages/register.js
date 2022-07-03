@@ -2,9 +2,7 @@ import {useState} from "react";
 import axios from "axios";
 import {toast} from "react-toastify";
 import {
-    AutoComplete,
     Button,
-    Cascader,
     Checkbox,
     Col,
     Form,
@@ -14,43 +12,12 @@ import {
     Select
 } from "antd";
 import {SyncOutlined} from "@ant-design/icons";
-
-import nextConfig from "../next.config.mjs";
 import Link from "next/link";
 
-const envar = nextConfig.app
+import nextConfig from "../next.config.mjs";
 
-const formItemLayout = {
-    labelCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 8,
-        },
-    },
-    wrapperCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 16,
-        },
-    },
-};
-
-const tailFormItemLayout = {
-    wrapperCol: {
-        xs: {
-            span: 24,
-            offset: 0,
-        },
-        sm: {
-            span: 16,
-            offset: 8,
-        },
-    },
-};
+import formItemLayout from "../constants/formItemLayout";
+import tailFormItemLayout from "../constants/tailFormItemLayout";
 
 const Register = () => {
 
@@ -84,7 +51,7 @@ const Register = () => {
         // console.log(nextConfig)
         try {
             setLoading(true)
-            const {data} = await axios.post(`${envar.apiPrefix}/register`, values)
+            const {data} = await axios.post(`${nextConfig.app.apiPrefix}/register`, values)
             // console.log(data)
             // as response with status != will go to catch, we dont need to make a status condition.
             // it will success anyway
@@ -127,7 +94,7 @@ const Register = () => {
                         email: 'test@test.com',
                         password: 'useruseruser',
                         confirmPassword: 'useruseruser',
-                        phoneNumber: '82211334400',
+                        phoneNumber: 82211334400,
                     }}
                     scrollToFirstError
                 >
@@ -217,19 +184,19 @@ const Register = () => {
                         label="Nomor Handphone"
                         rules={[
                             {
-                                message: 'Silahkan masukkan nomor handphone',
-                                min: 10
+                                message: 'Silahkan masukkan nomor handphone yang valid',
+                                type: 'number',
                             },
                         ]}
                     >
-                        <Input
+                        <InputNumber
                             placeholder="82233445xxx"
                             addonBefore={countryCodeSelector}
                             style={{
                                 width: '100%',
                             }}
                             value={phoneNumber}
-                            onChange={e => setPhoneNumber(e.target.value)}
+                            onChange={e => setPhoneNumber(e)}
                         />
                     </Form.Item>
                     <Form.Item
