@@ -7,8 +7,8 @@ const {Item} = Menu;
 const items = [
     {
         label: (
-            <Link href="/">
-                <a>App</a>
+            <Link href="/#">
+                <a>Gabung Kelas</a>
             </Link>
         ),
         key: 'app',
@@ -17,7 +17,7 @@ const items = [
     {
         label: (
             <Link href="/login">
-                <a>Login</a>
+                <a>Masuk</a>
             </Link>
         ),
         key: 'login',
@@ -26,7 +26,7 @@ const items = [
     {
         label: (
             <Link href="/register">
-                <a>Register</a>
+                <a>Daftar</a>
             </Link>
         ),
         key: 'register',
