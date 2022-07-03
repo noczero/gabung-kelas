@@ -7,7 +7,10 @@ const nextConfig = {
         name: 'Gabung Kelas: Situs Belajar Mengajar Kelas Daring',
         serverURL: process.env.BASE_SERVER_URL || 'http://localhost:8080',
         apiURL: process.env.BASE_API_URL_PREFIX || 'http://localhost:8080/api' , // will use in axios request
-        clientURL: process.env.BASE_CLIENT_URL || 'http://localhost:3001'
+        clientURL: process.env.BASE_CLIENT_URL || 'http://localhost:3001',
+        nodeENV: process.env.NODE_ENV || 'development',
+        apiPrefix: process.env.BASE_API_URL_PREFIX || '/api',
+        clientPort: process.env.BASE_CLIENT_PORT || '3001'
     },
     contact : {
         twitter : 'https://twitter.com/@gabungkelas',

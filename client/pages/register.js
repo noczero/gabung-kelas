@@ -18,7 +18,7 @@ import {SyncOutlined} from "@ant-design/icons";
 import nextConfig from "../next.config.mjs";
 import Link from "next/link";
 
-const {apiURL} = nextConfig.app
+const envar = nextConfig.app
 
 const formItemLayout = {
     labelCol: {
@@ -84,7 +84,7 @@ const Register = () => {
         // console.log(nextConfig)
         try {
             setLoading(true)
-            const {data} = await axios.post(`${apiURL}/register`, values)
+            const {data} = await axios.post(`${envar.apiPrefix}/register`, values)
             // console.log(data)
             // as response with status != will go to catch, we dont need to make a status condition.
             // it will success anyway
