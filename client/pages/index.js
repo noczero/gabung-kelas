@@ -2,9 +2,9 @@ import {envar} from "../config/envar";
 
 const Index = () => {
     return (
-      <>
-        <h1 className="jumbotron text-center bg-primary">{envar.app.name}</h1>
-      </>
+        <>
+            <h3 className="container-fluid text-center pt-4 pb-2">{envar.app.name}</h3>
+        </>
     );
 };
 
