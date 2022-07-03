@@ -12,19 +12,19 @@ export const registerUser = async (req, res) => {
         if (!email) {
             return res
                 .status(400)
-                .json({error: 'email is required'});
+                .send(api_response("01","Email diperlukan"));
         }
 
         if (!fullName) {
-            return res.status(400).json({error: 'fullname is required'});
+            return res.status(400).send(api_response("01","Nama lengkap diperlukan"));
         }
 
         if (!password || password.length < 8) {
-            return res.status(400).json({error: 'password is required and should be min 8 characters long '});
+            return res.status(400).send(api_response("01", "Password diperlukan dan panjangnya harus lebih besar dari 8 karakter"));
         }
 
         if (!agreement) {
-            return res.status(400).json({error: 'you must accept agreement.'});
+            return res.status(400).send(api_response("01", "Ketentuan dan kebijakan diperlukan"));
         }
 
         // check existing user
@@ -32,7 +32,7 @@ export const registerUser = async (req, res) => {
         if (existingUser) {
             return res
                 .status(400)
-                .json({error: 'That email address is already in use.'});
+                .send(api_response("01", "Email sudah digunakan, silahkan menggunakan email tersebut untuk login atau registrasi dengan email baru"));
         }
 
         // hash password
@@ -49,7 +49,7 @@ export const registerUser = async (req, res) => {
         const dbResult = await user.save();
 
         // send back response
-        res.status(201).send(api_response('00', 'success', [{
+        res.status(201).send(api_response('00', `Registrasi berhasil dilakukan. Silahkan login ${fullName} menggunakan ${email}.`, [{
             id: dbResult.id,
             email: dbResult.email,
             fullName: dbResult.fullName,
@@ -58,6 +58,6 @@ export const registerUser = async (req, res) => {
     } catch (error) {
         // res.status(500).send(failed_message)
         console.log(error)
-        res.status(500).send(api_response('01', 'failed', 'err'))
+        res.status(500).send(api_response('01', 'Something wrong'))
     }
 }
