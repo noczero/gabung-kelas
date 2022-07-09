@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {toast} from "react-toastify";
 import {
@@ -18,6 +18,8 @@ import nextConfig from "../next.config.mjs";
 
 import formItemLayout from "../constants/formItemLayout";
 import tailFormItemLayout from "../constants/tailFormItemLayout";
+import {useRouter} from "next/router";
+import {Context} from "../context";
 
 const Register = () => {
 
@@ -32,6 +34,14 @@ const Register = () => {
 
     const [form] = Form.useForm();
     const {Option} = Select;
+
+    const router = useRouter();
+    const {state: {user},} =  useContext(Context);
+
+    useEffect(() => {
+        //check user if user is login then push to / so cant access this page
+        if (user !== null) router.push("/");
+    },[user]);
 
     const countryCodeSelector = (
         <Form.Item name="countryCode" noStyle>

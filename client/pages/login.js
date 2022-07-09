@@ -1,6 +1,6 @@
 import {Button, Form, Input} from "antd";
 import Link from "next/link";
-import {useState, useContext} from "react";
+import {useState, useContext, useEffect} from "react";
 import axios from "axios";
 import {toast} from "react-toastify";
 
@@ -19,10 +19,17 @@ const Login = () => {
 
     // state
     const {state, dispatch} = useContext(Context);
-    console.log(state)
+    // console.log(state)
+    const {user} = state;
 
     // router
-    const router = useRouter()
+    const router = useRouter();
+
+    // protected page from login, redirect
+    useEffect(() => {
+         //check user if user is login then push to / so cant access this page
+        if (user !== null) router.push("/");
+    },[user]);
 
     const onFinish = async (values) => {
         console.log(values)
