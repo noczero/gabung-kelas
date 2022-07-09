@@ -1,4 +1,6 @@
 import {useReducer, createContext, useEffect} from "react";
+import axios from "axios";
+import {useRouter} from "next/router";
 
 // initial state
 const initialState = {
@@ -14,7 +16,7 @@ const rootReducer = (state, action) => {
         case "LOGIN":
             return {...state, user: action.payload};
         case "LOGOUT":
-            return {...state, user:null};
+            return {...state, user: null};
         default:
             return state;
     }
@@ -25,13 +27,45 @@ const Provider = ({children}) => {
     // for wrapping
     const [state, dispatch] = useReducer(rootReducer, initialState);
 
+    const router = useRouter();
+
     // load context from local storage
-    useEffect(()=>{
+    useEffect(() => {
         dispatch({
             type: "LOGIN",
             payload: JSON.parse(window.localStorage.getItem('user'))
         });
-    },[]);
+    }, []);
+
+    // handling expired token
+    axios.interceptors.response.use(
+        function (response) {
+            // any status code that lie within the range ot 2xx cause this function to trigger
+
+            return response;
+        }, function (error) {
+            // any status code that falls outside range 2xx cause this function to trigger
+            let res = error.response;
+
+            if (res.status === 401 && res.config && !res.config.__isRetryRequest) {
+                // handle logout
+                return new Promise((resolve, reject) => {
+                    axios.get(`${nextConfig.app.prefix}/logout`)
+                        .then((data)=> {
+                            console.log('/401 error> logout')
+                            window.localStorage.removeItem('user')
+                            router.push('/login')
+                        })
+                        .catch((err) => {
+                            console.log("Axois interceptors err", err);
+                            reject(error)
+                        })
+                })
+            }
+
+            return Promise.reject(error);
+        }
+    );
 
     return (
         <Context.Provider value={{state, dispatch}}>

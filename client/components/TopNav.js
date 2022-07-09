@@ -113,7 +113,6 @@ const TopNav = () => {
 
         // update profile label
         const findProfileIdx = itemConditional.findIndex(item => item.key ==='/user');
-        console.log(findProfileIdx)
 
         itemConditional[findProfileIdx].label = user.fullName // set label
     }
