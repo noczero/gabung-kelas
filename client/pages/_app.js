@@ -6,6 +6,8 @@ import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Footer from "../components/footer/Footer"
 import {useEffect} from "react";
+import Header from "../components/Header";
+import {Provider} from "../context";
 
 function MyApp({Component, pageProps}) {
     useEffect(() =>
@@ -15,12 +17,13 @@ function MyApp({Component, pageProps}) {
         document.body.classList.add("min-vh-100");
     });
     return (
-    <>
+    <Provider>
+        <Header/>
         <ToastContainer position="top-center"/>
         <TopNav/>
         <Component {...pageProps}/>
         <Footer/>
-    </>
+    </Provider>
     )
 }
 

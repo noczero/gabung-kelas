@@ -1,12 +1,15 @@
 import {Button, Form, Input} from "antd";
 import Link from "next/link";
-import {useState} from "react";
+import {useState, useContext} from "react";
 import axios from "axios";
 import {toast} from "react-toastify";
 
 import formItemLayout from "../constants/formItemLayout";
 import tailFormItemLayout from "../constants/tailFormItemLayout";
 import nextConfig from "../next.config.mjs";
+import {Context} from "../context";
+
+import {useRouter} from "next/router";
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -14,11 +17,31 @@ const Login = () => {
     const [loading, setLoading] = useState(false)
     const [form] = Form.useForm();
 
+    // state
+    const {state, dispatch} = useContext(Context);
+    console.log(state)
+
+    // router
+    const router = useRouter()
+
     const onFinish = async (values) => {
         console.log(values)
         try {
             setLoading(true)
             const {data} = await axios.post(`${nextConfig.app.apiPrefix}/login`, values)
+
+            // add user response to context
+            dispatch({
+                type:"LOGIN",
+                payload: data.list[0]
+            })
+
+            // set to local storage
+            window.localStorage.setItem('user', JSON.stringify(data.list[0]))
+
+            //redirect
+            await router.push("/");
+
             toast(data.message)
             setLoading(false)
         } catch (e) {
