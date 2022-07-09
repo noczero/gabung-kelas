@@ -1,11 +1,17 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 import {Menu} from "antd";
 import Link from "next/link";
-import {AppstoreAddOutlined, LoginOutlined, UserAddOutlined} from "@ant-design/icons";
+import {AppstoreAddOutlined, CoffeeOutlined, LoginOutlined, LogoutOutlined, UserAddOutlined} from "@ant-design/icons";
+import {Context} from "../context";
+import axios from "axios";
+import nextConfig from "../next.config.mjs";
+import {toast} from "react-toastify";
+import {useRouter} from "next/router";
 
-const {Item} = Menu;
+const {Item, SubMenu} = Menu;
 
-const items = [
+let items = [
+    // add loginShow key for dynamic nav before login or after login
     {
         label: (
             <Link href="/#">
@@ -14,6 +20,7 @@ const items = [
         ),
         key: '/',
         icon: <AppstoreAddOutlined/>,
+        afterloginshow: 'always'
     }, // remember to pass the key prop
     {
         label: (
@@ -22,7 +29,8 @@ const items = [
             </Link>
         ),
         key: '/login',
-        icon: <LoginOutlined/>
+        icon: <LoginOutlined/>,
+        afterloginshow: 'no'
     }, // which is required
     {
         label: (
@@ -31,22 +39,93 @@ const items = [
             </Link>
         ),
         key: '/register',
-        icon: <UserAddOutlined/>
+        icon: <UserAddOutlined/>,
+        afterloginshow: 'no'
     }, // which is required
+    {
+        label: 'User',
+        key: '/user',
+        icon: <CoffeeOutlined/>,
+        className: 'float-right',
+        afterloginshow: 'yes',
+        style:{ marginLeft: 'auto' } ,
+        children: [
+            {
+              label: 'Profile',
+              key : '/settings'
+            },
+            {
+                label: 'Keluar',
+                key: '/logout',
+            }
+
+        ],
+    },
 ];
 
 const TopNav = () => {
     const [current, setCurrent] = useState("");
 
     const handleClick = (e) => {
-        setCurrent(e.key)
+        if (e.key === '/logout') {
+            // handle logout
+            logout().then(r => {
+            })
+        } else {
+            setCurrent(e.key)
+        }
+    }
+
+
+    // use context
+    const {state, dispatch} = useContext(Context);
+
+    const {user} = state;
+
+    const router = useRouter();
+
+    const logout = async () => {
+        dispatch({type: 'LOGOUT'});
+
+        // remove local storage
+        window.localStorage.removeItem("user");
+
+        const {data} = await axios.get(`${nextConfig.app.apiPrefix}/logout`);
+        toast(data.message);
+        await router.push("/login");
+    }
+
+    // keep selected menu select
+    let isClient, itemConditional;
+
+    // navigation conditional
+    if (user === null) {
+        // not login
+        itemConditional = items.filter((item) => {
+            // search for login show false or login show null
+            return item.afterloginshow === 'no' || item.afterloginshow === 'always';
+        })
+    } else {
+        // already login
+        itemConditional = items.filter((item) => {
+            return item.afterloginshow === 'yes' || item.afterloginshow === 'always';
+        })
+
+        // update profile label
+        const findProfileIdx = itemConditional.findIndex(item => item.key ==='/user');
+        console.log(findProfileIdx)
+
+        itemConditional[findProfileIdx].label = user.fullName // set label
     }
 
     useEffect(() => {
-        process.browser && setCurrent(window.location.pathname);
-    }, [process.browser && window.location.pathname]);
+        let isClient = (typeof window !== 'undefined');
+        isClient && setCurrent(window.location.pathname);
+    }, [isClient && window.location.pathname]);
+
+
     return (
-        <Menu mode="horizontal" items={items} onClick={handleClick} selectedKeys={[current]}/>
+        <Menu mode="horizontal" items={itemConditional} onClick={handleClick} selectedKeys={[current]}/>
     )
 }
 export default TopNav;

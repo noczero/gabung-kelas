@@ -98,11 +98,13 @@ export const loginUser = async (req, res) => {
 
         // return user and token to client, exclude hashed password
         user.password = undefined;
+
         // send token in cookie
         res.cookie("token", token, {
             httpOnly: true,
             // secure: true, // only works on https
         });
+
         // send user as json response
         res.send(api_response("00", `Selamat datang ${user.fullName}, kamu berhasil masuk.`, [user]));
     } catch (err) {
@@ -110,3 +112,14 @@ export const loginUser = async (req, res) => {
         return res.status(400).send("01", "Something went wrong");
     }
 };
+
+export const logoutUser = async (req, res) => {
+    try {
+        // clear cookie
+        res.clearCookie("token");
+
+        return res.send(api_response('00', 'Anda berhasil keluar'))
+    } catch (err) {
+        console.log(err);
+    }
+}
