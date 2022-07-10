@@ -1,12 +1,18 @@
 import express from 'express';
 import cors from 'cors';
 import {readdirSync} from "fs";
+import csrf from "csurf";
+import cookieParser from "cookie-parser"
 
 const morgan = require('morgan');
 
 // utils
 import {envar} from "./config/envar"; // environment variable
-import {setupDB} from "./utils/db"; // mongodb database setup connection
+import {setupDB} from "./utils/db";
+import {api_response} from "./message/response"; // mongodb database setup connection
+
+// csrf
+const csrfProtection = csrf({cookie:true})
 
 // create express app
 const app = express();
@@ -15,6 +21,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(cookieParser()); // get cookie data
 app.use((req,res,next) => {
     console.log("this is own middleware")
     next();
@@ -27,6 +34,17 @@ setupDB().then(r => console.log("try to connect MongoDB..."));
 readdirSync('./routes').map((r) =>
     app.use(`/${envar.app.apiPrefix}`,require(`./routes/${r}`))
 );
+
+// apply csrf
+app.use(csrfProtection);
+app.get(`/${envar.app.apiPrefix}/csrf-token`, async (req,res) => {
+    try {
+        res.send({csrfToken: req.csrfToken()});
+    } catch (e) {
+        console.log(e)
+        return res.send(api_response('01','Failed, generate csrf'))
+    }
+})
 
 // run port
 app.listen(envar.port,'0.0.0.0', ()=>console.log(`server is running on port ${envar.port}`));

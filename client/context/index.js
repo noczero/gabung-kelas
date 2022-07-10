@@ -1,6 +1,7 @@
 import {useReducer, createContext, useEffect} from "react";
 import axios from "axios";
 import {useRouter} from "next/router";
+import nextConfig from "../next.config.mjs";
 
 // initial state
 const initialState = {
@@ -51,7 +52,7 @@ const Provider = ({children}) => {
                 // handle logout
                 return new Promise((resolve, reject) => {
                     axios.get(`${nextConfig.app.prefix}/logout`)
-                        .then((data)=> {
+                        .then((data) => {
                             console.log('/401 error> logout')
                             window.localStorage.removeItem('user')
                             router.push('/login')
@@ -66,6 +67,17 @@ const Provider = ({children}) => {
             return Promise.reject(error);
         }
     );
+
+
+    useEffect(() => {
+        const getCsrfToken = async () => {
+            const {data} = await axios.get(`${nextConfig.app.apiPrefix}/csrf-token`);
+            axios.defaults.headers["X-CSRF-Token"] = data.csrfToken;
+            // console.log(axios.defaults.headers)
+        }
+
+        getCsrfToken()
+    })
 
     return (
         <Context.Provider value={{state, dispatch}}>
