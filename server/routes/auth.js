@@ -2,7 +2,8 @@ import express from "express";
 
 const router = express.Router();
 import asyncHandler from "express-async-handler";
-import {loginUser, registerUser, logoutUser} from "../controllers/auth";
+import {loginUser, registerUser, logoutUser, currentUser} from "../controllers/auth";
+import {requireSignin} from "../middlewares";
 
 
 router.get("/register",(req,res) => {
@@ -13,6 +14,8 @@ router.get("/register",(req,res) => {
 router.post('/register', registerUser)
 router.post('/login', loginUser)
 router.get('/logout', logoutUser)
+
+router.get('/current-user', requireSignin, currentUser);
 
 
 

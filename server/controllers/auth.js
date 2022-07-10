@@ -123,3 +123,16 @@ export const logoutUser = async (req, res) => {
         console.log(err);
     }
 }
+
+
+export const currentUser = async (req,res) => {
+    try {
+        console.log(req.user);
+        // const user = await User.findById(req.user._id).select('-password') // exclude current user
+        // console.log("current_user", user)
+
+        return res.send(req.user)
+    } catch (e) {
+        console.log(e)
+    }
+}
