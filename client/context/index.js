@@ -51,9 +51,9 @@ const Provider = ({children}) => {
             if (res.status === 401 && res.config && !res.config.__isRetryRequest) {
                 // handle logout
                 return new Promise((resolve, reject) => {
-                    axios.get(`${nextConfig.app.prefix}/logout`)
+                    axios.get(`${nextConfig.app.apiPrefix}/logout`)
                         .then((data) => {
-                            console.log('/401 error> logout')
+                            // console.log('/401 error> logout')
                             window.localStorage.removeItem('user')
                             router.push('/login')
                         })
@@ -68,16 +68,15 @@ const Provider = ({children}) => {
         }
     );
 
+    const getCsrfToken = async () => {
+        const {data} = await axios.get(`${nextConfig.app.apiPrefix}/csrf-token`);
+        axios.defaults.headers["X-CSRF-Token"] = data.csrfToken;
+        // console.log(axios.defaults.headers)
+    }
 
     useEffect(() => {
-        const getCsrfToken = async () => {
-            const {data} = await axios.get(`${nextConfig.app.apiPrefix}/csrf-token`);
-            axios.defaults.headers["X-CSRF-Token"] = data.csrfToken;
-            // console.log(axios.defaults.headers)
-        }
-
         getCsrfToken()
-    })
+    },[])
 
     return (
         <Context.Provider value={{state, dispatch}}>

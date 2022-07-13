@@ -32,7 +32,7 @@ const Login = () => {
     },[user]);
 
     const onFinish = async (values) => {
-        console.log(values)
+        // console.log(values)
         try {
             setLoading(true)
             const {data} = await axios.post(`${nextConfig.app.apiPrefix}/login`, values)

@@ -44,15 +44,19 @@ let items = [
     }, // which is required
     {
         label: 'User',
-        key: '/user',
+        key: '/userMenu',
         icon: <CoffeeOutlined/>,
         className: 'float-right',
         afterloginshow: 'yes',
-        style:{ marginLeft: 'auto' } ,
+        style: {marginLeft: 'auto'},
         children: [
             {
-              label: 'Profile',
-              key : '/settings'
+                label: (
+                    <Link href="/user">
+                        <a>Dashboard</a>
+                    </Link>
+                ),
+                key: '/user'
             },
             {
                 label: 'Keluar',
@@ -112,7 +116,7 @@ const TopNav = () => {
         })
 
         // update profile label
-        const findProfileIdx = itemConditional.findIndex(item => item.key ==='/user');
+        const findProfileIdx = itemConditional.findIndex(item => item.key === '/userMenu');
 
         itemConditional[findProfileIdx].label = user.fullName // set label
     }
