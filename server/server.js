@@ -11,6 +11,9 @@ import {envar} from "./config/envar"; // environment variable
 import {setupDB} from "./utils/db";
 import {api_response} from "./message/response"; // mongodb database setup connection
 
+// services
+import {testEmail} from "./services/mail";
+
 // csrf
 const csrfProtection = csrf({cookie:true})
 
@@ -29,6 +32,9 @@ app.use(morgan('dev'));
 
 // invoke database setup
 setupDB().then(r => console.log("try to connect MongoDB..."));
+
+// mail server
+testEmail().then(r => console.log("try to connect mail Service..."))
 
 // import route folders sync
 readdirSync('./routes').map((r) =>

@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import {comparePassword, hashPassword} from "../utils/auth";
 import {envar} from "../config/envar";
 import jwt from "jsonwebtoken";
+import {sendEmail} from "../services/mail";
 
 export const registerUser = async (req, res) => {
     try {
@@ -49,6 +50,9 @@ export const registerUser = async (req, res) => {
             phoneNumber: `${countryCode}${phoneNumber}`
         });
         const dbResult = await user.save();
+
+        // send email for welcoming
+        await sendEmail(email, 'signup',null, fullName)
 
         // send back response
         res.status(201).send(api_response('00', `Registrasi berhasil dilakukan. Silahkan login ${fullName} menggunakan ${email}.`, [{

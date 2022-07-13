@@ -16,9 +16,11 @@ export const envar = {
     secret: process.env.JWT_SECRET,
     tokenLife: '7d'
   },
-  mailchimp: {
-    key: process.env.MAILCHIMP_KEY,
-    listKey: process.env.MAILCHIMP_LIST_KEY
+  mail: {
+    SMTP_HOST: process.env.MAIL_SMTP_HOST,
+    SMTP_PORT: process.env.MAIL_SMTP_PORT,
+    SMTP_AUTH_USER: process.env.MAIL_SMTP_AUTH_USER,
+    SMTP_AUTH_PASS: process.env.MAIL_SMTP_AUTH_PASS
   },
   mailgun: {
     key: process.env.MAILGUN_KEY,
