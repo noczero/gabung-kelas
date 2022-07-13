@@ -20,12 +20,12 @@ const app = express();
 // applied middlewares (some code will run before send back to our client).
 app.use(cors());
 app.use(express.json());
-app.use(morgan('dev'));
 app.use(cookieParser()); // get cookie data
-app.use((req,res,next) => {
-    console.log("this is own middleware")
-    next();
-});
+app.use(morgan('dev'));
+// app.use((req,res,next) => {
+//     console.log("this is own middleware")
+//     next();
+// });
 
 // invoke database setup
 setupDB().then(r => console.log("try to connect MongoDB..."));
