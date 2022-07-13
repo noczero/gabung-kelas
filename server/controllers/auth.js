@@ -127,12 +127,18 @@ export const logoutUser = async (req, res) => {
 
 export const currentUser = async (req,res) => {
     try {
-        console.log(req.user);
-        // const user = await User.findById(req.user._id).select('-password') // exclude current user
-        // console.log("current_user", user)
-
-        return res.send(req.user)
+        // The decoded JWT payload is now available as req.auth rather than req.user
+        if (req.auth){
+            const user = await User.findById(req.auth._id).select('-password') // exclude current user
+            return res.send(api_response('00', 'Success', [user]))
+        } else {
+            res.sendStatus(403);
+            return res.send(api_response('01', 'Failed, invalid request body'))
+        }
+        // return res.send(api_response('00','Test'))
     } catch (e) {
         console.log(e)
+        res.sendStatus(403);
+        return res.send(api_response('01','Invalid authorization due token verification'))
     }
 }
