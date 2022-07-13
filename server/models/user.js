@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const {ROLE_ADMIN, ROLE_SUBSCRIBER, ROLE_INSTRUCTOR} = require('../constants');
 
 const {Schema} = mongoose;
@@ -16,16 +17,19 @@ const userSchema = new Schema({
             type: String
         },
         fullName: {
-            type: String
+            type: String,
+            trim: true,
+            required: true,
         },
         password: {
             type: String,
+            required: true,
             min: 8,
             max: 64
         },
         agreement: {
             type: Boolean,
-            default : true
+            default: true
         },
         provider: {
             type: String,
@@ -58,4 +62,4 @@ const userSchema = new Schema({
     }
 );
 
-export default mongoose.model('User',userSchema)
+export default mongoose.model('User', userSchema)
