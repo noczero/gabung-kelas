@@ -125,6 +125,7 @@ const Login = () => {
                 </Form>
                 <div className="text-center">
                     <p>Belum punya akun? Silahkan <Link href="/register"><a>mendaftar</a></Link></p>
+                    <p><Link href="/forgot-password"><a>Lupa Password</a></Link></p>
                 </div>
             </div>
         </>

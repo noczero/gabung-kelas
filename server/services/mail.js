@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer'
 import {envar} from "../config/envar";
 import template from "../config/template";
+import {confirmResetPasswordEmail, forgetPasswordEmail} from "../config/mail-template";
 
 class MailService {
     init() {
@@ -80,7 +81,7 @@ const prepareTemplate = (type, host, data) => {
             break;
 
         case 'reset-confirmation':
-            message = template.confirmResetPasswordEmail();
+            message = confirmResetPasswordEmail();
             break;
 
         case 'signup':
@@ -109,6 +110,10 @@ const prepareTemplate = (type, host, data) => {
 
         case 'order-confirmation':
             message = template.orderConfirmationEmail(data);
+            break;
+
+        case 'forgot-password':
+            message = forgetPasswordEmail(data);
             break;
 
         default:

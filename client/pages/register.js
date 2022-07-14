@@ -36,12 +36,12 @@ const Register = () => {
     const {Option} = Select;
 
     const router = useRouter();
-    const {state: {user},} =  useContext(Context);
+    const {state: {user},} = useContext(Context);
 
     useEffect(() => {
         //check user if user is login then push to / so cant access this page
         if (user !== null) router.push("/");
-    },[user]);
+    }, [user]);
 
     const countryCodeSelector = (
         <Form.Item name="countryCode" noStyle>
@@ -74,6 +74,8 @@ const Register = () => {
             // }
             toast(data.message)
             setLoading(false)
+            //redirect
+            await router.push("/login");
         } catch (e) {
             toast.error(e.response.data.message)
             // console.log(e)
