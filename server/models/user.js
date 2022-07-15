@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const {ROLE_ADMIN, ROLE_SUBSCRIBER, ROLE_INSTRUCTOR} = require('../constants');
+const {ROLE_ADMIN, ROLE_SUBSCRIBER, ROLE_INSTRUCTOR, USER_STATUS_ACTIVE, USER_STATUS_INACTIVE} = require('../constants');
 
 const {Schema} = mongoose;
 
@@ -31,6 +31,11 @@ const userSchema = new Schema({
             type: Boolean,
             default: true
         },
+        status : {
+            type : String,
+            default : USER_STATUS_INACTIVE,
+            enum : [USER_STATUS_INACTIVE, USER_STATUS_ACTIVE]
+        },
         provider: {
             type: String,
             required: true,
@@ -54,8 +59,18 @@ const userSchema = new Schema({
         stripeAccountId: "",
         stripeSeller: {},
         stripeSession: {},
-        resetPasswordToken: {type: String},
-        resetPasswordExpires: {type: Date},
+        resetPasswordToken: {
+            type: String
+        },
+        resetPasswordExpires: {
+            type: Date
+        },
+        emailVerificationCode : {
+            type: String
+        },
+        emailVerificationExpires : {
+            type: Date
+        }
     },
     {
         timestamps: true

@@ -3,8 +3,9 @@ import User from "../models/user";
 import {comparePassword, hashPassword} from "../utils/auth";
 import {envar} from "../config/envar";
 import jwt from "jsonwebtoken";
-import {nanoid} from "nanoid";
+import {nanoid, customAlphabet} from 'nanoid/async'
 import {sendEmail} from "../services/mail";
+import {USER_STATUS_ACTIVE} from "../constants";
 
 export const registerUser = async (req, res) => {
     try {
@@ -47,12 +48,24 @@ export const registerUser = async (req, res) => {
             password: hashedPassword,
             fullName,
             agreement,
-            phoneNumber: `${countryCode}${phoneNumber}`
+            phoneNumber: `${countryCode}${phoneNumber}`,
+            emailVerificationCode: await customAlphabet('1234567890', 6)(), // 6 digit number
+            emailVerificationExpires: Date.now() + 3600000 // + 1 hours
         });
+        // generate verification code
+
         const dbResult = await user.save();
 
         // send email for welcoming
         await sendEmail(email, 'signup', null, fullName)
+
+        // account verification
+        const emailContent = {
+            fullName: user.fullName,
+            emailVerificationCode: user.emailVerificationCode,
+            emailVerificationExpires: user.emailVerificationExpires
+        }
+        await sendEmail(user.email, 'account-verification', null, emailContent)
 
         // send back response
         res.status(201).send(api_response('00', `Registrasi berhasil dilakukan. Silahkan login ${fullName} menggunakan ${email}.`, [{
@@ -155,7 +168,7 @@ export const forgetPassword = async (req, res) => {
         if (!email) return res.status(400).send(api_response('01', "Field email diperlukan!"))
 
         // generate code
-        const shortCode = nanoid(6).toUpperCase();
+        const shortCode = (await nanoid(6)).toUpperCase()
 
         // find user and update it
         const user = await User.findOneAndUpdate(
@@ -166,7 +179,7 @@ export const forgetPassword = async (req, res) => {
         // if not found
         if (!user) return res.status(400).send(api_response('01', 'Tidak ada user dengan email ini.'));
 
-        await sendEmail(email, 'forgot-password', null, shortCode)
+        await sendEmail(email, 'forgot-password', null, {code: shortCode, fullName: user.fullName})
 
         return res.status(200).send(api_response('00', `Kode verifikasi sedang dikirim ke ${email}. Silahkan cek email kamu.`))
 
@@ -199,11 +212,65 @@ export const resetPassword = async (req, res) => {
         resetUser.resetPasswordExpires = undefined;
         resetUser.save();
 
-        await sendEmail(resetUser.email, 'reset-confirmation');
+        await sendEmail(resetUser.email, 'reset-confirmation', null, {fullName: resetUser.fullName});
 
         return res.status(200).send(api_response('00', 'Password berhasil diperbarui. Silahkan login kembali'))
     } catch (e) {
         console.error(e)
-        return res.status(500).send(api_response('01','Terjadi kesalahan'))
+        return res.status(500).send(api_response('01', 'Terjadi kesalahan'))
+    }
+}
+
+
+export const verifyUser = async (req, res) => {
+    try {
+        const {emailVerificationCode} = req.body
+
+        const user = await User.findById(req.auth._id)
+        if (!user) return res.status(400).send(api_response('01', 'User tidak ditemukan'))
+
+        if (user.emailVerificationCode !== emailVerificationCode) return res.status(400).send(api_response('01', 'Kode verifikasi salah.'))
+        if (user.emailVerificationExpires < Date.now()) return res.status(400).send(api_response('01', 'Kode verifikasi sudah usang, silahkan kirim ulang.'))
+
+        // update field
+        user.emailVerificationCode = undefined
+        user.emailVerificationExpires = undefined
+        user.status = USER_STATUS_ACTIVE
+        user.save()
+
+        await sendEmail(user.email, 'account-verification-success', null, {fullName: user.fullName})
+
+        return res.status(200).send(api_response('00', 'Verifikasi akun berhasil.'))
+
+    } catch (e) {
+        console.error(e)
+        return res.status(500).send(api_response('01', 'Terjadi kesalahan'))
+    }
+}
+
+export const resendVerificationCode = async (req, res) => {
+    try {
+        const user = await User.findById(req.auth._id)
+        if (!user) return res.status(400).send(api_response('01', 'User tidak ditemukan'))
+
+        // update field
+        user.emailVerificationCode = await customAlphabet('1234567890', 6)()
+        user.emailVerificationExpires = Date.now() + 3600000
+        user.status = USER_STATUS_ACTIVE
+        user.save()
+
+        const emailContent = {
+            fullName: user.fullName,
+            emailVerificationCode: user.emailVerificationCode,
+            emailVerificationExpires: user.emailVerificationExpires
+        }
+
+        await sendEmail(user.email, 'account-verification', null, emailContent)
+
+        return res.status(200).send(api_response('00', 'Kode verifikasi sedang dikirim. Silahkan cek email kamu.'))
+
+    } catch (e) {
+        console.error(e)
+        return res.status(500).send(api_response('01', 'Terjadi kesalahan'))
     }
 }

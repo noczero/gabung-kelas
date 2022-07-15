@@ -9,7 +9,7 @@ import tailFormItemLayout from "../constants/tailFormItemLayout";
 import nextConfig from "../next.config.mjs";
 import {Context} from "../context";
 
-import {useRouter} from "next/router";
+import Router from "next/router";
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -23,13 +23,13 @@ const Login = () => {
     const {user} = state;
 
     // router
-    const router = useRouter();
+    // const router = useRouter();
 
     // protected page from login, redirect
     useEffect(() => {
-         //check user if user is login then push to / so cant access this page
-        if (user !== null) router.push("/");
-    },[user]);
+        //check user if user is login then push to / so cant access this page
+        if (user !== null) Router.push("/user");
+    }, [user]);
 
     const onFinish = async (values) => {
         // console.log(values)
@@ -39,18 +39,18 @@ const Login = () => {
 
             // add user response to context
             dispatch({
-                type:"LOGIN",
+                type: "LOGIN",
                 payload: data.list[0]
             })
 
             // set to local storage
             window.localStorage.setItem('user', JSON.stringify(data.list[0]))
 
-            //redirect
-            await router.push("/");
-
             toast(data.message)
             setLoading(false)
+
+            //redirect
+            Router.push("/user");
         } catch (e) {
             toast.error(e.response.data.message)
             setLoading(false)
@@ -66,8 +66,8 @@ const Login = () => {
                     name="login"
                     onFinish={onFinish}
                     initialValues={{
-                        email: 'test@test.com',
-                        password: 'useruseruser',
+                        email: 'satrya@zeroinside.id',
+                        password: 'satrya@zeroinside.id',
                     }}
                     scrollToFirstError
                 >

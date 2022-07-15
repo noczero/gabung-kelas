@@ -102,10 +102,10 @@ const Register = () => {
                     onFinish={onFinish}
                     initialValues={{
                         countryCode: '62',
-                        fullName: 'User 1',
-                        email: 'test@test.com',
-                        password: 'useruseruser',
-                        confirmPassword: 'useruseruser',
+                        fullName: 'Satrya Budi Pratama',
+                        email: 'satrya@zeroinside.id',
+                        password: 'satrya@zeroinside.id',
+                        confirmPassword: 'satrya@zeroinside.id',
                         phoneNumber: 82211334400,
                     }}
                     scrollToFirstError
