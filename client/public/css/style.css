@@ -36,3 +36,12 @@
     padding-left: 12px;
     height: 40px;
 }
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+
+.footer-wings {
+    background:transparent url("/assets/wings-header.svg") center center no-repeat;
+    background-size:contain;
+}

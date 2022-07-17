@@ -1,5 +1,5 @@
 import {useState, useEffect, useContext} from "react";
-import {Menu} from "antd";
+import {Menu, Layout} from "antd";
 import Link from "next/link";
 import {AppstoreAddOutlined, CoffeeOutlined, LoginOutlined, LogoutOutlined, UserAddOutlined} from "@ant-design/icons";
 import {Context} from "../context";
@@ -8,18 +8,29 @@ import nextConfig from "../next.config.mjs";
 import {toast} from "react-toastify";
 import {useRouter} from "next/router";
 
+import logo from "../public/assets/icon/gabung-kelas/with-text/SVG/Asset 5.svg"
+import Image from "next/image";
+
 const {Item, SubMenu} = Menu;
+const {Header} = Layout;
 
 let items = [
     // add loginShow key for dynamic nav before login or after login
     {
         label: (
             <Link href="/#">
-                <a>Gabung Kelas</a>
+                <a style={{ paddingLeft:'100px'}}/>
             </Link>
         ),
         key: '/',
-        icon: <AppstoreAddOutlined/>,
+        icon: (
+             <Image
+                 className="p-1"
+                    src={logo}
+                    alt="Logo Gabung Kelas"
+                    layout='fill'
+                />
+        ),
         afterloginshow: 'always'
     }, // remember to pass the key prop
     {
@@ -128,7 +139,9 @@ const TopNav = () => {
 
 
     return (
-        <Menu mode="horizontal" items={itemConditional} onClick={handleClick} selectedKeys={[current]}/>
+        <Header className="site-layout-background" style={{ padding: 0 ,  position: 'fixed', zIndex: 1, width: '100%' }}>
+            <Menu  theme="light" mode="horizontal" items={itemConditional} onClick={handleClick} selectedKeys={[current]}/>
+        </Header>
     )
 }
 export default TopNav;

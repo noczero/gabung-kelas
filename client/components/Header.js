@@ -1,7 +1,7 @@
 import nextConfig from "../next.config.mjs";
 import Head from "next/head";
 
-const Header = () => {
+const AppHeader = () => {
     return (
         <Head>
             <link rel="shortcut icon" href="/assets/icon/gabung-kelas/favicon.ico"/>
@@ -38,4 +38,4 @@ const Header = () => {
     )
 }
 
-export default Header;
+export default AppHeader;

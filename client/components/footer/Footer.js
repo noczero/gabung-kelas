@@ -6,6 +6,9 @@ import {
 } from "@ant-design/icons"
 import {Button, Space} from 'antd';
 import nextConfig from "../../next.config.mjs";
+import wingsHeader from "../../public/assets/wings-header.svg"
+import Image from 'next/image'
+
 
 const {app, contact} = nextConfig;
 
@@ -14,6 +17,7 @@ const Footer = () => {
     return (
 
         <footer className="text-center text-lg-start bg-light text-muted mt-auto">
+
             <section className="pt-3">
                 <div className="container text-center text-md-start mt-5">
                     <div className="row mt-3">
@@ -75,7 +79,7 @@ const Footer = () => {
             </div>
 
             <section
-                className="d-flex justify-content-center justify-content-lg-between p-4 "
+                className="footer-wings d-flex justify-content-center justify-content-lg-between p-4 "
             >
                 <div className="me-5 d-none d-lg-block">
                     <span>Kamu dapat terhubung dengan media sosial kami:</span>
@@ -87,7 +91,13 @@ const Footer = () => {
                     </Space>
                 </div>
             </section>
+              {/*<Image*/}
+              {/*      src={wingsHeader}*/}
+              {/*      alt="Picture of the author"*/}
+              {/*      layout="responsive"*/}
+              {/*  />*/}
         </footer>
+
 
     )
 }

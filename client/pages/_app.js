@@ -6,25 +6,32 @@ import {Flip, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Footer from "../components/footer/Footer"
 import {useEffect} from "react";
-import Header from "../components/Header";
+import AppHeader from "../components/Header";
 import {Provider} from "../context";
+import {Layout} from "antd";
 
 
 function MyApp({Component, pageProps}) {
-    useEffect(() =>
-    {
+    const {Header, Content, Sider} = Layout;
+    useEffect(() => {
         document.body.classList.add("d-flex");
         document.body.classList.add("flex-column");
         document.body.classList.add("min-vh-100");
     });
     return (
-    <Provider>
-        <Header/>
-        <ToastContainer position="top-center" limit={1} autoClose={1000} transition={Flip}/>
-        <TopNav/>
-        <Component {...pageProps}/>
-        <Footer/>
-    </Provider>
+        <Provider>
+            <AppHeader/>
+            <Layout>
+                <ToastContainer position="top-center" limit={1} autoClose={1000} transition={Flip}/>
+                <TopNav/>
+                <Content className="site-layout" style={{padding: '0 50px', marginTop: 64}}>
+                    <div className="site-layout-background" style={{padding: 24, minHeight: 500}}>
+                        <Component {...pageProps}/>
+                    </div>
+                </Content>
+                <Footer/>
+            </Layout>
+        </Provider>
     )
 }
 
