@@ -1,7 +1,7 @@
 import {useState, useEffect, useContext} from "react";
-import {Menu, Layout} from "antd";
+import {Menu, Layout, Avatar} from "antd";
 import Link from "next/link";
-import {AppstoreAddOutlined, CoffeeOutlined, LoginOutlined, LogoutOutlined, UserAddOutlined} from "@ant-design/icons";
+import {AppstoreAddOutlined, CoffeeOutlined, LoginOutlined, LogoutOutlined, UserAddOutlined,UserOutlined} from "@ant-design/icons";
 import {Context} from "../context";
 import axios from "axios";
 import nextConfig from "../next.config.mjs";
@@ -56,7 +56,12 @@ let items = [
     {
         label: 'User',
         key: '/userMenu',
-        icon: <CoffeeOutlined/>,
+        icon:  <Avatar
+            src="https://joeschmoe.io/api/v1/random"
+            size={40}
+            style={{ verticalAlign: "middle" }}
+            icon={<UserOutlined />}
+          />,
         className: 'float-right',
         afterloginshow: 'yes',
         style: {marginLeft: 'auto'},
