@@ -10,6 +10,7 @@ import nextConfig from "../next.config.mjs";
 import {Context} from "../context";
 
 import Router from "next/router";
+import {useRouter} from "next/router";
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -23,12 +24,15 @@ const Login = () => {
     const {user} = state;
 
     // router
-    // const router = useRouter();
+    const router = useRouter();
 
     // protected page from login, redirect
     useEffect(() => {
         //check user if user is login then push to / so cant access this page
         if (user !== null) Router.push("/user");
+
+        // Prefetch the dashboard page
+        router.prefetch('/user')
     }, [user]);
 
     const onFinish = async (values) => {
@@ -50,7 +54,8 @@ const Login = () => {
             setLoading(false)
 
             //redirect
-            Router.push("/user");
+            // Router.push("/user");
+            await router.push("/user")
         } catch (e) {
             toast.error(e.response.data.message)
             setLoading(false)
