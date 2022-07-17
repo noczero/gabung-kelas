@@ -13,7 +13,7 @@ const UserRoute = ({children}) => {
 
     const fetchUser = async () => {
         try {
-            const {data} = await axios.get(`${nextConfig.app.apiPrefix}/current-user`)
+            const {data} = await axios.get(`${nextConfig.app.apiPrefix}/user`)
             // console.log(data)
 
             if (data.status === '00') {
